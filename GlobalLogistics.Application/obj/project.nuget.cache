@@ -1,0 +1,13 @@
+{
+  "version": 2,
+  "dgSpecHash": "5cFlnuFFQNQ=",
+  "success": true,
+  "projectFilePath": "/home/sergio/rastreador-encomendas/GlobalLogistics.Application/GlobalLogistics.Application.csproj",
+  "expectedPackageFiles": [
+    "/home/sergio/.nuget/packages/fluentvalidation/11.11.0/fluentvalidation.11.11.0.nupkg.sha512",
+    "/home/sergio/.nuget/packages/mediatr/12.4.1/mediatr.12.4.1.nupkg.sha512",
+    "/home/sergio/.nuget/packages/mediatr.contracts/2.0.1/mediatr.contracts.2.0.1.nupkg.sha512",
+    "/home/sergio/.nuget/packages/microsoft.extensions.dependencyinjection.abstractions/8.0.0/microsoft.extensions.dependencyinjection.abstractions.8.0.0.nupkg.sha512"
+  ],
+  "logs": []
+}

@@ -1,0 +1,9 @@
+<Solution>
+  <Project Path="GlobalLogistics.Application/GlobalLogistics.Application.csproj" />
+  <Project Path="GlobalLogistics.Domain/GlobalLogistics.Domain.csproj" />
+  <Project Path="GlobalLogistics.Infrastructure/GlobalLogistics.Infrastructure.csproj" />
+  <Project Path="GlobalLogistics.IngestionAPI/GlobalLogistics.IngestionAPI.csproj" />
+  <Project Path="GlobalLogistics.QueryAPI/GlobalLogistics.QueryAPI.csproj" />
+  <Project Path="GlobalLogistics.Tests.Integration/GlobalLogistics.Tests.Integration.csproj" />
+  <Project Path="GlobalLogistics.Worker/GlobalLogistics.Worker.csproj" />
+</Solution>

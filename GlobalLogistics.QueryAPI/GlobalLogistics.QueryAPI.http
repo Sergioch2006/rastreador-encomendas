@@ -1,0 +1,6 @@
+@GlobalLogistics.QueryAPI_HostAddress = http://localhost:5183
+
+GET {{GlobalLogistics.QueryAPI_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
