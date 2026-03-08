@@ -1,0 +1,129 @@
+networks:
+  logistics-net:
+    driver: bridge
+
+volumes:
+  sqlserver-data:
+  redis-data:
+  rabbitmq-data:
+
+services:
+
+  # === INFRAESTRUTURA ===
+
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: logistics-sqlserver
+    environment:
+      SA_PASSWORD: "Encomendas@2026!"
+      ACCEPT_EULA: "Y"
+      MSSQL_PID: "Developer"
+    ports:
+      - "1433:1433"
+    volumes:
+      - sqlserver-data:/var/opt/mssql
+    networks:
+      - logistics-net
+    healthcheck:
+      test: /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P "Encomendas@2026!" -Q "SELECT 1" -No
+      interval: 10s
+      retries: 10
+      start_period: 30s
+
+  redis:
+    image: redis:7-alpine
+    container_name: logistics-redis
+    command: redis-server --requirepass Redis@2026!
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    networks:
+      - logistics-net
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "Redis@2026!", "ping"]
+      interval: 10s
+      retries: 5
+
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    container_name: logistics-rabbitmq
+    environment:
+      RABBITMQ_DEFAULT_USER: logistics_user
+      RABBITMQ_DEFAULT_PASS: "Rabbit@2026!"
+    ports:
+      - "5672:5672"
+      - "15672:15672"   # Management UI
+    volumes:
+      - rabbitmq-data:/var/lib/rabbitmq
+    networks:
+      - logistics-net
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "ping"]
+      interval: 10s
+      retries: 10
+      start_period: 30s
+
+  # === MICROSERVIÇOS ===
+
+  ingestion-api:
+    build:
+      context: .
+      dockerfile: GlobalLogistics.IngestionAPI/Dockerfile
+    container_name: logistics-ingestion-api
+    ports:
+      - "5001:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__SqlServer=Server=sqlserver,1433;Database=LogisticsWrite;User Id=sa;Password=Encomendas@2026!;TrustServerCertificate=true;
+      - RabbitMQ__Host=rabbitmq
+      - RabbitMQ__User=logistics_user
+      - RabbitMQ__Pass=Rabbit@2026!
+      - RabbitMQ__ConnectionString=amqp://logistics_user:Rabbit@2026!@rabbitmq:5672
+    depends_on:
+      sqlserver:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    networks:
+      - logistics-net
+
+  query-api:
+    build:
+      context: .
+      dockerfile: GlobalLogistics.QueryAPI/Dockerfile
+    container_name: logistics-query-api
+    ports:
+      - "5002:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__SqlServer=Server=sqlserver,1433;Database=LogisticsWrite;User Id=sa;Password=Encomendas@2026!;TrustServerCertificate=true;
+      - Redis__ConnectionString=redis:6379,password=Redis@2026!
+    depends_on:
+      sqlserver:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - logistics-net
+
+  worker:
+    build:
+      context: .
+      dockerfile: GlobalLogistics.Worker/Dockerfile
+    container_name: logistics-worker
+    environment:
+      - ConnectionStrings__SqlServer=Server=sqlserver,1433;Database=LogisticsWrite;User Id=sa;Password=Encomendas@2026!;TrustServerCertificate=true;
+      - RabbitMQ__Host=rabbitmq
+      - RabbitMQ__User=logistics_user
+      - RabbitMQ__Pass=Rabbit@2026!
+      - Redis__ConnectionString=redis:6379,password=Redis@2026!
+    depends_on:
+      sqlserver:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - logistics-net
