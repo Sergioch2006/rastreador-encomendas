@@ -39,7 +39,7 @@ builder.Services.AddHealthChecks()
     .AddRedis(builder.Configuration["Redis:ConnectionString"]!, name: "redis");
 
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddOpenApi();
 
 var app = builder.Build();
 
@@ -47,8 +47,7 @@ app.UseSerilogRequestLogging();
 
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+    app.MapOpenApi();
 }
 
 // === ENDPOINTS ===
@@ -65,8 +64,7 @@ app.MapGet("/api/tracking/{trackingCode}", async (
         ? Results.Ok(result)
         : Results.NotFound(new { Message = $"Pacote '{trackingCode}' não encontrado." });
 })
-.WithName("GetPackageTracking")
-.WithOpenApi();
+.WithName("GetPackageTracking");
 
 // Health Check
 app.MapHealthChecks("/health");

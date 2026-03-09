@@ -38,6 +38,19 @@
           }
         }
       },
+      "FluentValidation/11.11.0": {
+        "type": "package",
+        "compile": {
+          "lib/net8.0/FluentValidation.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net8.0/FluentValidation.dll": {
+            "related": ".xml"
+          }
+        }
+      },
       "Humanizer.Core/2.14.1": {
         "type": "package",
         "compile": {
@@ -98,6 +111,36 @@
         },
         "runtime": {
           "lib/net9.0/MassTransit.RabbitMqTransport.dll": {
+            "related": ".xml"
+          }
+        }
+      },
+      "MediatR/12.4.1": {
+        "type": "package",
+        "dependencies": {
+          "MediatR.Contracts": "[2.0.1, 3.0.0)",
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "8.0.0"
+        },
+        "compile": {
+          "lib/net6.0/MediatR.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net6.0/MediatR.dll": {
+            "related": ".xml"
+          }
+        }
+      },
+      "MediatR.Contracts/2.0.1": {
+        "type": "package",
+        "compile": {
+          "lib/netstandard2.0/MediatR.Contracts.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/netstandard2.0/MediatR.Contracts.dll": {
             "related": ".xml"
           }
         }
@@ -1391,7 +1434,7 @@
           }
         }
       },
-      "Serilog.Sinks.Console/6.0.0": {
+      "Serilog.Sinks.Console/6.1.1": {
         "type": "package",
         "dependencies": {
           "Serilog": "4.0.0"
@@ -1839,6 +1882,32 @@
             "rid": "win"
           }
         }
+      },
+      "GlobalLogistics.Application/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v10.0",
+        "dependencies": {
+          "FluentValidation": "11.11.0",
+          "GlobalLogistics.Domain": "1.0.0",
+          "MediatR": "12.4.1",
+          "Microsoft.EntityFrameworkCore.SqlServer": "10.0.0"
+        },
+        "compile": {
+          "bin/placeholder/GlobalLogistics.Application.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/GlobalLogistics.Application.dll": {}
+        }
+      },
+      "GlobalLogistics.Domain/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v10.0",
+        "compile": {
+          "bin/placeholder/GlobalLogistics.Domain.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/GlobalLogistics.Domain.dll": {}
+        }
       }
     }
   },
@@ -1881,6 +1950,31 @@
         "lib/net8.0/Azure.Identity.xml",
         "lib/netstandard2.0/Azure.Identity.dll",
         "lib/netstandard2.0/Azure.Identity.xml"
+      ]
+    },
+    "FluentValidation/11.11.0": {
+      "sha512": "cyIVdQBwSipxWG8MA3Rqox7iNbUNUTK5bfJi9tIdm4CAfH71Oo5ABLP4/QyrUwuakqpUEPGtE43BDddvEehuYw==",
+      "type": "package",
+      "path": "fluentvalidation/11.11.0",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "README.md",
+        "fluent-validation-icon.png",
+        "fluentvalidation.11.11.0.nupkg.sha512",
+        "fluentvalidation.nuspec",
+        "lib/net5.0/FluentValidation.dll",
+        "lib/net5.0/FluentValidation.xml",
+        "lib/net6.0/FluentValidation.dll",
+        "lib/net6.0/FluentValidation.xml",
+        "lib/net7.0/FluentValidation.dll",
+        "lib/net7.0/FluentValidation.xml",
+        "lib/net8.0/FluentValidation.dll",
+        "lib/net8.0/FluentValidation.xml",
+        "lib/netstandard2.0/FluentValidation.dll",
+        "lib/netstandard2.0/FluentValidation.xml",
+        "lib/netstandard2.1/FluentValidation.dll",
+        "lib/netstandard2.1/FluentValidation.xml"
       ]
     },
     "Humanizer.Core/2.14.1": {
@@ -1962,6 +2056,37 @@
         "masstransit.rabbitmq.8.3.6.nupkg.sha512",
         "masstransit.rabbitmq.nuspec",
         "mt-logo-small.png"
+      ]
+    },
+    "MediatR/12.4.1": {
+      "sha512": "0tLxCgEC5+r1OCuumR3sWyiVa+BMv3AgiU4+pz8xqTc+2q1WbUEXFOr7Orm96oZ9r9FsldgUtWvB2o7b9jDOaw==",
+      "type": "package",
+      "path": "mediatr/12.4.1",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "README.md",
+        "gradient_128x128.png",
+        "lib/net6.0/MediatR.dll",
+        "lib/net6.0/MediatR.xml",
+        "lib/netstandard2.0/MediatR.dll",
+        "lib/netstandard2.0/MediatR.xml",
+        "mediatr.12.4.1.nupkg.sha512",
+        "mediatr.nuspec"
+      ]
+    },
+    "MediatR.Contracts/2.0.1": {
+      "sha512": "FYv95bNT4UwcNA+G/J1oX5OpRiSUxteXaUt2BJbRSdRNiIUNbggJF69wy6mnk2wYToaanpdXZdCwVylt96MpwQ==",
+      "type": "package",
+      "path": "mediatr.contracts/2.0.1",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "gradient_128x128.png",
+        "lib/netstandard2.0/MediatR.Contracts.dll",
+        "lib/netstandard2.0/MediatR.Contracts.xml",
+        "mediatr.contracts.2.0.1.nupkg.sha512",
+        "mediatr.contracts.nuspec"
       ]
     },
     "Microsoft.Bcl.AsyncInterfaces/8.0.0": {
@@ -4390,10 +4515,10 @@
         "serilog.settings.configuration.nuspec"
       ]
     },
-    "Serilog.Sinks.Console/6.0.0": {
-      "sha512": "fQGWqVMClCP2yEyTXPIinSr5c+CBGUvBybPxjAGcf7ctDhadFhrQw03Mv8rJ07/wR5PDfFjewf2LimvXCDzpbA==",
+    "Serilog.Sinks.Console/6.1.1": {
+      "sha512": "8jbqgjUyZlfCuSTaJk6lOca465OndqOz3KZP6Cryt/IqZYybyBu7GP0fE/AXBzrrQB3EBmQntBFAvMVz1COvAA==",
       "type": "package",
-      "path": "serilog.sinks.console/6.0.0",
+      "path": "serilog.sinks.console/6.1.1",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
@@ -4409,7 +4534,7 @@
         "lib/net8.0/Serilog.Sinks.Console.xml",
         "lib/netstandard2.0/Serilog.Sinks.Console.dll",
         "lib/netstandard2.0/Serilog.Sinks.Console.xml",
-        "serilog.sinks.console.6.0.0.nupkg.sha512",
+        "serilog.sinks.console.6.1.1.nupkg.sha512",
         "serilog.sinks.console.nuspec"
       ]
     },
@@ -5063,15 +5188,27 @@
         "system.windows.extensions.nuspec",
         "useSharedDesignerContext.txt"
       ]
+    },
+    "GlobalLogistics.Application/1.0.0": {
+      "type": "project",
+      "path": "../GlobalLogistics.Application/GlobalLogistics.Application.csproj",
+      "msbuildProject": "../GlobalLogistics.Application/GlobalLogistics.Application.csproj"
+    },
+    "GlobalLogistics.Domain/1.0.0": {
+      "type": "project",
+      "path": "../GlobalLogistics.Domain/GlobalLogistics.Domain.csproj",
+      "msbuildProject": "../GlobalLogistics.Domain/GlobalLogistics.Domain.csproj"
     }
   },
   "projectFileDependencyGroups": {
     "net10.0": [
+      "GlobalLogistics.Application >= 1.0.0",
+      "GlobalLogistics.Domain >= 1.0.0",
       "MassTransit.RabbitMQ >= 8.3.6",
       "Microsoft.EntityFrameworkCore.SqlServer >= 10.0.0",
       "Microsoft.EntityFrameworkCore.Tools >= 10.0.0",
       "Serilog.AspNetCore >= 10.0.0",
-      "Serilog.Sinks.Console >= 6.0.0",
+      "Serilog.Sinks.Console >= 6.1.1",
       "StackExchange.Redis >= 2.8.16"
     ]
   },
@@ -5100,7 +5237,14 @@
       "frameworks": {
         "net10.0": {
           "targetAlias": "net10.0",
-          "projectReferences": {}
+          "projectReferences": {
+            "/home/sergio/rastreador-encomendas/GlobalLogistics.Application/GlobalLogistics.Application.csproj": {
+              "projectPath": "/home/sergio/rastreador-encomendas/GlobalLogistics.Application/GlobalLogistics.Application.csproj"
+            },
+            "/home/sergio/rastreador-encomendas/GlobalLogistics.Domain/GlobalLogistics.Domain.csproj": {
+              "projectPath": "/home/sergio/rastreador-encomendas/GlobalLogistics.Domain/GlobalLogistics.Domain.csproj"
+            }
+          }
         }
       },
       "warningProperties": {
@@ -5139,7 +5283,7 @@
           },
           "Serilog.Sinks.Console": {
             "target": "Package",
-            "version": "[6.0.0, )"
+            "version": "[6.1.1, )"
           },
           "StackExchange.Redis": {
             "target": "Package",
@@ -5439,16 +5583,5 @@
         }
       }
     }
-  },
-  "logs": [
-    {
-      "code": "NU1605",
-      "level": "Error",
-      "message": "Aviso como Erro: Downgrade de pacote detectado: Serilog.Sinks.Console de 6.1.1 para 6.0.0. Referencie o pacote diretamente do projeto para selecionar uma versão diferente. \n GlobalLogistics.Infrastructure -> Serilog.AspNetCore 10.0.0 -> Serilog.Sinks.Console (>= 6.1.1) \n GlobalLogistics.Infrastructure -> Serilog.Sinks.Console (>= 6.0.0)",
-      "libraryId": "Serilog.Sinks.Console",
-      "targetGraphs": [
-        "net10.0"
-      ]
-    }
-  ]
+  }
 }

@@ -44,7 +44,7 @@ builder.Services.AddHealthChecks()
     .AddRabbitMQ(rabbitConnectionString: builder.Configuration["RabbitMQ:ConnectionString"]!, name: "rabbitmq");
 
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddOpenApi();
 
 var app = builder.Build();
 
@@ -52,8 +52,7 @@ app.UseSerilogRequestLogging();
 
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+    app.MapOpenApi();
 }
 
 // === ENDPOINTS ===
@@ -74,8 +73,7 @@ app.MapPost("/api/packages", async (CreatePackageRequest request, AppDbContext d
 
     return Results.Created($"/api/packages/{package.TrackingCode}", new { package.Id, package.TrackingCode });
 })
-.WithName("CreatePackage")
-.WithOpenApi();
+.WithName("CreatePackage");
 
 // POST /api/tracking — Publicar evento de rastreamento
 app.MapPost("/api/tracking", async (
@@ -108,8 +106,7 @@ app.MapPost("/api/tracking", async (
 
     return Results.Accepted($"/api/tracking/{correlationId}", new { CorrelationId = correlationId });
 })
-.WithName("UpdateTracking")
-.WithOpenApi();
+.WithName("UpdateTracking");
 
 // Health Check endpoint
 app.MapHealthChecks("/health");

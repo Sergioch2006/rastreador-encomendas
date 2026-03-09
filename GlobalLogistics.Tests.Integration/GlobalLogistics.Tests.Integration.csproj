@@ -23,4 +23,9 @@
     <Using Include="Xunit" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\GlobalLogistics.Domain\GlobalLogistics.Domain.csproj" />
+    <ProjectReference Include="..\GlobalLogistics.Infrastructure\GlobalLogistics.Infrastructure.csproj" />
+  </ItemGroup>
+
 </Project>

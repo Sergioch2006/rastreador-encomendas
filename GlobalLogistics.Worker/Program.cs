@@ -5,6 +5,7 @@ using MassTransit;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 using StackExchange.Redis;
+using GlobalLogistics.Worker;
 
 var builder = Host.CreateApplicationBuilder(args);
 

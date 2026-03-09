@@ -1,0 +1,17 @@
+/home/sergio/rastreador-encomendas/GlobalLogistics.Application/obj/Debug/net10.0/GlobalLogistics.Application.csproj.AssemblyReference.cache
+/home/sergio/rastreador-encomendas/GlobalLogistics.Application/obj/Debug/net10.0/GlobalLogistics.Application.GeneratedMSBuildEditorConfig.editorconfig
+/home/sergio/rastreador-encomendas/GlobalLogistics.Application/obj/Debug/net10.0/GlobalLogistics.Application.AssemblyInfoInputs.cache
+/home/sergio/rastreador-encomendas/GlobalLogistics.Application/obj/Debug/net10.0/GlobalLogistics.Application.AssemblyInfo.cs
+/home/sergio/rastreador-encomendas/GlobalLogistics.Application/obj/Debug/net10.0/GlobalLogistics.Application.csproj.CoreCompileInputs.cache
+/home/sergio/rastreador-encomendas/GlobalLogistics.Application/bin/Debug/net10.0/GlobalLogistics.Application.deps.json
+/home/sergio/rastreador-encomendas/GlobalLogistics.Application/bin/Debug/net10.0/GlobalLogistics.Application.runtimeconfig.json
+/home/sergio/rastreador-encomendas/GlobalLogistics.Application/bin/Debug/net10.0/GlobalLogistics.Application.dll
+/home/sergio/rastreador-encomendas/GlobalLogistics.Application/bin/Debug/net10.0/GlobalLogistics.Application.pdb
+/home/sergio/rastreador-encomendas/GlobalLogistics.Application/bin/Debug/net10.0/GlobalLogistics.Domain.dll
+/home/sergio/rastreador-encomendas/GlobalLogistics.Application/bin/Debug/net10.0/GlobalLogistics.Domain.pdb
+/home/sergio/rastreador-encomendas/GlobalLogistics.Application/obj/Debug/net10.0/GlobalLo.E749101E.Up2Date
+/home/sergio/rastreador-encomendas/GlobalLogistics.Application/obj/Debug/net10.0/GlobalLogistics.Application.dll
+/home/sergio/rastreador-encomendas/GlobalLogistics.Application/obj/Debug/net10.0/refint/GlobalLogistics.Application.dll
+/home/sergio/rastreador-encomendas/GlobalLogistics.Application/obj/Debug/net10.0/GlobalLogistics.Application.pdb
+/home/sergio/rastreador-encomendas/GlobalLogistics.Application/obj/Debug/net10.0/GlobalLogistics.Application.genruntimeconfig.cache
+/home/sergio/rastreador-encomendas/GlobalLogistics.Application/obj/Debug/net10.0/ref/GlobalLogistics.Application.dll

@@ -1,15 +1,18 @@
 {
   "version": 2,
-  "dgSpecHash": "rmC7tN6HTYs=",
-  "success": false,
+  "dgSpecHash": "EfhVW/m6OGw=",
+  "success": true,
   "projectFilePath": "/home/sergio/rastreador-encomendas/GlobalLogistics.Infrastructure/GlobalLogistics.Infrastructure.csproj",
   "expectedPackageFiles": [
     "/home/sergio/.nuget/packages/azure.core/1.47.1/azure.core.1.47.1.nupkg.sha512",
     "/home/sergio/.nuget/packages/azure.identity/1.14.2/azure.identity.1.14.2.nupkg.sha512",
+    "/home/sergio/.nuget/packages/fluentvalidation/11.11.0/fluentvalidation.11.11.0.nupkg.sha512",
     "/home/sergio/.nuget/packages/humanizer.core/2.14.1/humanizer.core.2.14.1.nupkg.sha512",
     "/home/sergio/.nuget/packages/masstransit/8.3.6/masstransit.8.3.6.nupkg.sha512",
     "/home/sergio/.nuget/packages/masstransit.abstractions/8.3.6/masstransit.abstractions.8.3.6.nupkg.sha512",
     "/home/sergio/.nuget/packages/masstransit.rabbitmq/8.3.6/masstransit.rabbitmq.8.3.6.nupkg.sha512",
+    "/home/sergio/.nuget/packages/mediatr/12.4.1/mediatr.12.4.1.nupkg.sha512",
+    "/home/sergio/.nuget/packages/mediatr.contracts/2.0.1/mediatr.contracts.2.0.1.nupkg.sha512",
     "/home/sergio/.nuget/packages/microsoft.bcl.asyncinterfaces/8.0.0/microsoft.bcl.asyncinterfaces.8.0.0.nupkg.sha512",
     "/home/sergio/.nuget/packages/microsoft.bcl.cryptography/9.0.4/microsoft.bcl.cryptography.9.0.4.nupkg.sha512",
     "/home/sergio/.nuget/packages/microsoft.build/17.7.2/microsoft.build.17.7.2.nupkg.sha512",
@@ -68,7 +71,7 @@
     "/home/sergio/.nuget/packages/serilog.extensions.logging/10.0.0/serilog.extensions.logging.10.0.0.nupkg.sha512",
     "/home/sergio/.nuget/packages/serilog.formatting.compact/3.0.0/serilog.formatting.compact.3.0.0.nupkg.sha512",
     "/home/sergio/.nuget/packages/serilog.settings.configuration/10.0.0/serilog.settings.configuration.10.0.0.nupkg.sha512",
-    "/home/sergio/.nuget/packages/serilog.sinks.console/6.0.0/serilog.sinks.console.6.0.0.nupkg.sha512",
+    "/home/sergio/.nuget/packages/serilog.sinks.console/6.1.1/serilog.sinks.console.6.1.1.nupkg.sha512",
     "/home/sergio/.nuget/packages/serilog.sinks.debug/3.0.0/serilog.sinks.debug.3.0.0.nupkg.sha512",
     "/home/sergio/.nuget/packages/serilog.sinks.file/7.0.0/serilog.sinks.file.7.0.0.nupkg.sha512",
     "/home/sergio/.nuget/packages/stackexchange.redis/2.8.16/stackexchange.redis.2.8.16.nupkg.sha512",
@@ -94,17 +97,5 @@
     "/home/sergio/.nuget/packages/system.threading.ratelimiting/8.0.0/system.threading.ratelimiting.8.0.0.nupkg.sha512",
     "/home/sergio/.nuget/packages/system.windows.extensions/9.0.0/system.windows.extensions.9.0.0.nupkg.sha512"
   ],
-  "logs": [
-    {
-      "code": "NU1605",
-      "level": "Error",
-      "message": "Aviso como Erro: Downgrade de pacote detectado: Serilog.Sinks.Console de 6.1.1 para 6.0.0. Referencie o pacote diretamente do projeto para selecionar uma versão diferente. \n GlobalLogistics.Infrastructure -> Serilog.AspNetCore 10.0.0 -> Serilog.Sinks.Console (>= 6.1.1) \n GlobalLogistics.Infrastructure -> Serilog.Sinks.Console (>= 6.0.0)",
-      "projectPath": "/home/sergio/rastreador-encomendas/GlobalLogistics.Infrastructure/GlobalLogistics.Infrastructure.csproj",
-      "filePath": "/home/sergio/rastreador-encomendas/GlobalLogistics.Infrastructure/GlobalLogistics.Infrastructure.csproj",
-      "libraryId": "Serilog.Sinks.Console",
-      "targetGraphs": [
-        "net10.0"
-      ]
-    }
-  ]
+  "logs": []
 }
