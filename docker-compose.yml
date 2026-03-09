@@ -79,7 +79,7 @@ services:
       - RabbitMQ__Host=rabbitmq
       - RabbitMQ__User=logistics_user
       - RabbitMQ__Pass=Rabbit@2026!
-      - RabbitMQ__ConnectionString=amqp://logistics_user:Rabbit@2026!@rabbitmq:5672
+      - RabbitMQ__ConnectionString=amqp://logistics_user:Rabbit%402026!@rabbitmq:5672
     depends_on:
       sqlserver:
         condition: service_healthy

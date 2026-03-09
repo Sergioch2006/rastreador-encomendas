@@ -25,6 +25,16 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 builder.Services.AddMediatR(cfg =>
     cfg.RegisterServicesFromAssembly(typeof(UpdatePackageLocationCommand).Assembly));
 
+// Remove handlers from Queries namespace to avoid missing dependency errors in Ingestion API
+var queryHandlers = builder.Services
+    .Where(d => d.ImplementationType?.Namespace?.StartsWith("GlobalLogistics.Application.Queries") == true)
+    .ToList();
+
+foreach (var handler in queryHandlers)
+{
+    builder.Services.Remove(handler);
+}
+
 // MassTransit + RabbitMQ
 builder.Services.AddMassTransit(x =>
 {

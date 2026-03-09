@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("GlobalLogistics.IngestionAPI")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+b16013bf76537e76959ffd15c8b1f4356c83b06d")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+aeb6b9002a9c3c0d80c227aa4a8148d39506c53c")]
 [assembly: System.Reflection.AssemblyProductAttribute("GlobalLogistics.IngestionAPI")]
 [assembly: System.Reflection.AssemblyTitleAttribute("GlobalLogistics.IngestionAPI")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
