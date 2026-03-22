@@ -36,4 +36,4 @@ Para garantir o rigor técnico e a qualidade do software, o projeto foi estrutur
 3. Execute o comando abaixo:
    ```bash
    docker compose up -d
-4. Acesse o painel do RabbitMQ em localhost:15672
+4. Acesse o painel do RabbitMQ em localhost:15672.
