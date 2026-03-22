@@ -11,8 +11,8 @@ Para garantir o rigor técnico e a qualidade do software, o projeto foi estrutur
 - **Resultado:** Criação do Documento de Visão e definição de Requisitos Não Funcionais focados em escalabilidade horizontal.
 
 ### 2. Planejamento (Planning)
-- **Gestão:** Utilização de metodologias Ágeis (Scrum/Kanban) para organização das tarefas.
-- **Backlog:** Divisão em épicos: Core Infrastructure, Ingestion Service, Event Bus e Query Service.
+- **Gestão:** Utilização de metodologias ágeis (Scrum/Kanban) para organização das tarefas.
+- **Backlog:** Divisão em épicos: Core Infrastructure, Ingestion Service, Event Bus, e Query Service.
 
 ### 3. Modelagem (Modeling)
 - **Arquitetura:** Implementação do padrão CQRS (Command Query Responsibility Segregation) para otimizar fluxos de leitura e escrita.
@@ -36,4 +36,4 @@ Para garantir o rigor técnico e a qualidade do software, o projeto foi estrutur
 3. Execute o comando abaixo:
    ```bash
    docker compose up -d
-4. Acesse o painel do RabbitMQ em localhost:15672
+4. Acesse o painel do RabbitMQ em localhost:15672.
