@@ -5,10 +5,14 @@ using MassTransit;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using System.Security.Claims; // ← Para extrair claims do usuário
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Serilog
+// 🪵 Serilog
 Log.Logger = new LoggerConfiguration()
     .ReadFrom.Configuration(builder.Configuration)
     .Enrich.FromLogContext()
@@ -17,15 +21,15 @@ Log.Logger = new LoggerConfiguration()
 
 builder.Host.UseSerilog();
 
-// DbContext (Write)
+// 🗄️ DbContext (Write)
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("SqlServer")));
 
-// MediatR
+// 🔄 MediatR
 builder.Services.AddMediatR(cfg =>
     cfg.RegisterServicesFromAssembly(typeof(UpdatePackageLocationCommand).Assembly));
 
-// Remove handlers from Queries namespace to avoid missing dependency errors in Ingestion API
+// Remove handlers from Queries namespace para evitar erros de dependência
 var queryHandlers = builder.Services
     .Where(d => d.ImplementationType?.Namespace?.StartsWith("GlobalLogistics.Application.Queries") == true)
     .ToList();
@@ -35,7 +39,7 @@ foreach (var handler in queryHandlers)
     builder.Services.Remove(handler);
 }
 
-// MassTransit + RabbitMQ
+// 🐰 MassTransit + RabbitMQ
 builder.Services.AddMassTransit(x =>
 {
     x.UsingRabbitMq((ctx, cfg) =>
@@ -48,28 +52,92 @@ builder.Services.AddMassTransit(x =>
     });
 });
 
-// Health Checks
+// 🏥 Health Checks
 builder.Services.AddHealthChecks()
     .AddSqlServer(builder.Configuration.GetConnectionString("SqlServer")!, name: "sqlserver")
     .AddRabbitMQ(rabbitConnectionString: builder.Configuration["RabbitMQ:ConnectionString"]!, name: "rabbitmq");
 
+// 📚 OpenAPI / Swagger
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddOpenApi();
 
+// 🔐 AUTENTICAÇÃO JWT (✅ REGISTRADO ANTES DO builder.Build())
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            
+            ValidIssuer = builder.Configuration["Auth:JwtIssuer"],
+            ValidAudience = builder.Configuration["Auth:JwtAudience"],
+            IssuerSigningKey = new SymmetricSecurityKey(
+                Encoding.UTF8.GetBytes(builder.Configuration["Auth:JwtSigningKey"]!)),
+            
+            ClockSkew = TimeSpan.FromMinutes(2)
+        };
+        
+        options.MapInboundClaims = false;
+        
+        options.Events = new JwtBearerEvents
+        {
+            OnAuthenticationFailed = context =>
+            {
+                Log.Warning("❌ JWT auth failed: {Message}", context.Exception.Message);
+                return Task.CompletedTask;
+            },
+            OnTokenValidated = context =>
+            {
+                var email = context.Principal?.FindFirst(ClaimTypes.Email)?.Value;
+                Log.Debug("✅ Token validado para: {Email}", email);
+                return Task.CompletedTask;
+            }
+        };
+    });
+
+// 🔐 Autorização com política
+builder.Services.AddAuthorizationBuilder()
+    .AddPolicy("RequireAuthenticated", policy => policy.RequireAuthenticatedUser());
+
+// ✅ BUILD DO APP (APENAS UMA VEZ!)
 var app = builder.Build();
 
+// 🔄 Middleware pipeline (ORDEM É CRÍTICA!)
 app.UseSerilogRequestLogging();
 
 if (app.Environment.IsDevelopment())
 {
-    app.MapOpenApi();
+    app.MapOpenApi(); // ← Você está usando AddOpenApi(), não Swagger
 }
+
+// ⚠️ AUTH MIDDLEWARE - ORDEM CORRETA
+
+// ⚠️ AUTH MIDDLEWARE - ORDEM CORRETA
+app.UseAuthentication();  // ← Valida o token JWT
+app.UseAuthorization();   // ← Aplica políticas [Authorize]/RequireAuthorization
 
 // === ENDPOINTS ===
 
-// POST /api/packages — Criar novo pacote
-app.MapPost("/api/packages", async (CreatePackageRequest request, AppDbContext db, CancellationToken ct) =>
+// 🏥 Health Check (PÚBLICO - sem autenticação)
+app.MapHealthChecks("/health");
+
+// 📦 POST /api/packages — Criar novo pacote (✅ PROTEGIDO)
+app.MapPost("/api/packages", async (
+    CreatePackageRequest request, 
+    AppDbContext db, 
+    HttpContext httpContext,  // ← Para extrair claims do usuário
+    CancellationToken ct) =>
 {
+    // 🔐 Opcional: Auditoria - extrair usuário autenticado
+    var userId = httpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+    var userEmail = httpContext.User.FindFirst(ClaimTypes.Email)?.Value;
+    
+    Log.Information("📦 Criando pacote {TrackingCode} por {UserEmail}", 
+        request.TrackingCode, userEmail);
+
     var package = GlobalLogistics.Domain.Entities.Package.Create(
         request.TrackingCode,
         request.SenderName,
@@ -78,20 +146,31 @@ app.MapPost("/api/packages", async (CreatePackageRequest request, AppDbContext d
         request.DestinationAddress,
         request.WeightKg);
 
+    // 🔐 Opcional: Salvar informações de auditoria
+    // package.CreatedBy = userId;
+    // package.CreatedByEmail = userEmail;
+
     db.Packages.Add(package);
     await db.SaveChangesAsync(ct);
 
     return Results.Created($"/api/packages/{package.TrackingCode}", new { package.Id, package.TrackingCode });
 })
+.RequireAuthorization()  // 🔐 PROTEGE ESTE ENDPOINT
 .WithName("CreatePackage");
 
-// POST /api/tracking — Publicar evento de rastreamento
+// 📍 POST /api/tracking — Publicar evento de rastreamento (✅ PROTEGIDO)
 app.MapPost("/api/tracking", async (
     TrackingUpdateRequest request,
     IPublishEndpoint publishEndpoint,
     IMediator mediator,
+    HttpContext httpContext,  // ← Para extrair claims
     CancellationToken ct) =>
 {
+    // 🔐 Auditoria: log com usuário autenticado
+    var userEmail = httpContext.User.FindFirst(ClaimTypes.Email)?.Value;
+    Log.Information("📍 Evento de rastreamento para {TrackingCode} por {UserEmail}", 
+        request.TrackingCode, userEmail);
+
     var correlationId = await mediator.Send(
         new UpdatePackageLocationCommand(
             request.TrackingCode,
@@ -102,35 +181,37 @@ app.MapPost("/api/tracking", async (
             request.Description),
         ct);
 
-    // Publicar no RabbitMQ
     await publishEndpoint.Publish(new PackageLocationUpdatedEvent
     {
-        PackageId = Guid.Empty, // Worker irá resolver pelo TrackingCode
+        PackageId = Guid.Empty,
         TrackingCode = request.TrackingCode,
         Status = request.Status,
         Location = request.Location,
         Latitude = request.Latitude,
         Longitude = request.Longitude,
-        Description = request.Description
+        Description = request.Description,
+        // 🔐 Opcional: incluir usuário no evento para auditoria no Worker
+        // TriggeredBy = userEmail
     }, ct);
 
     return Results.Accepted($"/api/tracking/{correlationId}", new { CorrelationId = correlationId });
 })
+.RequireAuthorization()  // 🔐 PROTEGE ESTE ENDPOINT
 .WithName("UpdateTracking");
 
-// Health Check endpoint
-app.MapHealthChecks("/health");
-
-// Garantir que o DB existe ao iniciar
-using (var scope = app.Services.CreateScope())
+// 🔄 Garantir que o DB existe ao iniciar (apenas em desenvolvimento ou com flag)
+if (app.Environment.IsDevelopment())
 {
-    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-    await db.Database.MigrateAsync();
+    using (var scope = app.Services.CreateScope())
+    {
+        var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+        await db.Database.MigrateAsync();
+    }
 }
 
 app.Run();
 
-// Request records
+// === REQUEST RECORDS ===
 record CreatePackageRequest(
     string TrackingCode,
     string SenderName,

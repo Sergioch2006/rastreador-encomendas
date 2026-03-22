@@ -7,6 +7,7 @@ volumes:
   redis-data:
   rabbitmq-data:
 
+
 services:
 
   # === INFRAESTRUTURA ===
@@ -30,6 +31,34 @@ services:
       retries: 10
       start_period: 30s
 
+  # === AuthAPI Service ===
+  logistics-auth-api:
+    build:
+      context: .
+      dockerfile: GlobalLogistics.AuthAPI/Dockerfile
+    container_name: logistics-auth-api
+    ports:
+      - "5003:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_HTTP_PORTS=8080
+      - ConnectionStrings__AuthDb=Server=sqlserver,1433;Database=LogisticsAuth;User Id=sa;Password=Encomendas@2026!;TrustServerCertificate=True;
+      - Jwt__Issuer=GlobalLogistics.AuthAPI
+      - Jwt__Audience=GlobalLogistics.API
+      - Jwt__SigningKey=${JWT_SIGNING_KEY:-HeAwCqSEvdyn8GSuDXYXZhygQ0htwqz2vGbQ/5P9giU=}
+      - Jwt__TokenExpirationMinutes=60
+    depends_on:
+      sqlserver:
+        condition: service_healthy
+    networks:
+      - logistics-net
+    restart: unless-stopped
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8080/health" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
   redis:
     image: redis:7-alpine
     container_name: logistics-redis
@@ -41,7 +70,7 @@ services:
     networks:
       - logistics-net
     healthcheck:
-      test: ["CMD", "redis-cli", "-a", "Redis@2026!", "ping"]
+      test: [ "CMD", "redis-cli", "-a", "Redis@2026!", "ping" ]
       interval: 10s
       retries: 5
 
@@ -53,13 +82,13 @@ services:
       RABBITMQ_DEFAULT_PASS: "Rabbit@2026!"
     ports:
       - "5672:5672"
-      - "15672:15672"   # Management UI
+      - "15672:15672" # Management UI
     volumes:
       - rabbitmq-data:/var/lib/rabbitmq
     networks:
       - logistics-net
     healthcheck:
-      test: ["CMD", "rabbitmq-diagnostics", "ping"]
+      test: [ "CMD", "rabbitmq-diagnostics", "ping" ]
       interval: 10s
       retries: 10
       start_period: 30s
@@ -80,10 +109,15 @@ services:
       - RabbitMQ__User=logistics_user
       - RabbitMQ__Pass=Rabbit@2026!
       - RabbitMQ__ConnectionString=amqp://logistics_user:Rabbit%402026!@rabbitmq:5672
+      - Auth__JwtIssuer=GlobalLogistics.AuthAPI
+      - Auth__JwtAudience=GlobalLogistics.API
+      - Auth__JwtSigningKey=${JWT_SIGNING_KEY:-HeAwCqSEvdyn8GSuDXYXZhygQ0htwqz2vGbQ/5P9giU=}
     depends_on:
       sqlserver:
         condition: service_healthy
       rabbitmq:
+        condition: service_healthy
+      logistics-auth-api:
         condition: service_healthy
     networks:
       - logistics-net
@@ -99,10 +133,15 @@ services:
       - ASPNETCORE_ENVIRONMENT=Development
       - ConnectionStrings__SqlServer=Server=sqlserver,1433;Database=LogisticsWrite;User Id=sa;Password=Encomendas@2026!;TrustServerCertificate=true;
       - Redis__ConnectionString=redis:6379,password=Redis@2026!
+      - Auth__JwtIssuer=GlobalLogistics.AuthAPI
+      - Auth__JwtAudience=GlobalLogistics.API
+      - Auth__JwtSigningKey=${JWT_SIGNING_KEY:-HeAwCqSEvdyn8GSuDXYXZhygQ0htwqz2vGbQ/5P9giU=}
     depends_on:
       sqlserver:
         condition: service_healthy
       redis:
+        condition: service_healthy
+      logistics-auth-api:
         condition: service_healthy
     networks:
       - logistics-net

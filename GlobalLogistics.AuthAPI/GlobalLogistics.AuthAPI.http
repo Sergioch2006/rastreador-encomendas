@@ -1,0 +1,6 @@
+@GlobalLogistics.AuthAPI_HostAddress = http://localhost:5082
+
+GET {{GlobalLogistics.AuthAPI_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
