@@ -7,6 +7,7 @@ volumes:
   redis-data:
   rabbitmq-data:
 
+
 services:
 
   # === INFRAESTRUTURA ===
@@ -15,7 +16,7 @@ services:
     image: mcr.microsoft.com/mssql/server:2022-latest
     container_name: logistics-sqlserver
     environment:
-      SA_PASSWORD: "Encomendas@2026!"
+      SA_PASSWORD: "Encomendas2026"
       ACCEPT_EULA: "Y"
       MSSQL_PID: "Developer"
     ports:
@@ -25,7 +26,7 @@ services:
     networks:
       - logistics-net
     healthcheck:
-      test: /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P "Encomendas@2026!" -Q "SELECT 1" -No
+      test: /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P "Encomendas2026" -Q "SELECT 1" -No
       interval: 10s
       retries: 10
       start_period: 30s
@@ -41,7 +42,7 @@ services:
     networks:
       - logistics-net
     healthcheck:
-      test: ["CMD", "redis-cli", "-a", "Redis@2026!", "ping"]
+      test: [ "CMD", "redis-cli", "-a", "Redis@2026!", "ping" ]
       interval: 10s
       retries: 5
 
@@ -53,13 +54,13 @@ services:
       RABBITMQ_DEFAULT_PASS: "Rabbit@2026!"
     ports:
       - "5672:5672"
-      - "15672:15672"   # Management UI
+      - "15672:15672" # Management UI
     volumes:
       - rabbitmq-data:/var/lib/rabbitmq
     networks:
       - logistics-net
     healthcheck:
-      test: ["CMD", "rabbitmq-diagnostics", "ping"]
+      test: [ "CMD", "rabbitmq-diagnostics", "ping" ]
       interval: 10s
       retries: 10
       start_period: 30s
@@ -75,7 +76,7 @@ services:
       - "5001:8080"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - ConnectionStrings__SqlServer=Server=sqlserver,1433;Database=LogisticsWrite;User Id=sa;Password=Encomendas@2026!;TrustServerCertificate=true;
+      - ConnectionStrings__SqlServer=Server=sqlserver,1433;Database=LogisticsWrite;User Id=sa;Password=Encomendas2026;TrustServerCertificate=true;
       - RabbitMQ__Host=rabbitmq
       - RabbitMQ__User=logistics_user
       - RabbitMQ__Pass=Rabbit@2026!
@@ -97,7 +98,7 @@ services:
       - "5002:8080"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - ConnectionStrings__SqlServer=Server=sqlserver,1433;Database=LogisticsWrite;User Id=sa;Password=Encomendas@2026!;TrustServerCertificate=true;
+      - ConnectionStrings__SqlServer=Server=sqlserver,1433;Database=LogisticsWrite;User Id=sa;Password=Encomendas2026;TrustServerCertificate=true;
       - Redis__ConnectionString=redis:6379,password=Redis@2026!
     depends_on:
       sqlserver:
@@ -113,7 +114,7 @@ services:
       dockerfile: GlobalLogistics.Worker/Dockerfile
     container_name: logistics-worker
     environment:
-      - ConnectionStrings__SqlServer=Server=sqlserver,1433;Database=LogisticsWrite;User Id=sa;Password=Encomendas@2026!;TrustServerCertificate=true;
+      - ConnectionStrings__SqlServer=Server=sqlserver,1433;Database=LogisticsWrite;User Id=sa;Password=Encomendas2026;TrustServerCertificate=true;
       - RabbitMQ__Host=rabbitmq
       - RabbitMQ__User=logistics_user
       - RabbitMQ__Pass=Rabbit@2026!

@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("GlobalLogistics.Tests.Integration")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+aeb6b9002a9c3c0d80c227aa4a8148d39506c53c")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+288c40dbd145510f649cffc38e448fff48efdd31")]
 [assembly: System.Reflection.AssemblyProductAttribute("GlobalLogistics.Tests.Integration")]
 [assembly: System.Reflection.AssemblyTitleAttribute("GlobalLogistics.Tests.Integration")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

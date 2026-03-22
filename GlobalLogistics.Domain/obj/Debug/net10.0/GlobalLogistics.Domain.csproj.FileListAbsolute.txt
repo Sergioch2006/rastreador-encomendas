@@ -5,6 +5,7 @@
 /home/sergio/rastreador-encomendas/GlobalLogistics.Domain/obj/Debug/net10.0/GlobalLogistics.Domain.AssemblyInfoInputs.cache
 /home/sergio/rastreador-encomendas/GlobalLogistics.Domain/obj/Debug/net10.0/GlobalLogistics.Domain.AssemblyInfo.cs
 /home/sergio/rastreador-encomendas/GlobalLogistics.Domain/obj/Debug/net10.0/GlobalLogistics.Domain.csproj.CoreCompileInputs.cache
+/home/sergio/rastreador-encomendas/GlobalLogistics.Domain/obj/Debug/net10.0/GlobalLogistics.Domain.sourcelink.json
 /home/sergio/rastreador-encomendas/GlobalLogistics.Domain/obj/Debug/net10.0/GlobalLogistics.Domain.dll
 /home/sergio/rastreador-encomendas/GlobalLogistics.Domain/obj/Debug/net10.0/refint/GlobalLogistics.Domain.dll
 /home/sergio/rastreador-encomendas/GlobalLogistics.Domain/obj/Debug/net10.0/GlobalLogistics.Domain.pdb
