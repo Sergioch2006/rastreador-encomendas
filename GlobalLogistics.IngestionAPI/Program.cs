@@ -9,17 +9,20 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using System.Security.Claims; // ← Para extrair claims do usuário
+using Serilog.Core;
+using Serilog.Events;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // 🪵 Serilog
-Log.Logger = new LoggerConfiguration()
-    .ReadFrom.Configuration(builder.Configuration)
-    .Enrich.FromLogContext()
-    .WriteTo.Console()
-    .CreateLogger();
-
-builder.Host.UseSerilog();
+builder.Host.UseSerilog((context, services, loggerConfiguration) =>
+    loggerConfiguration
+        .ReadFrom.Configuration(context.Configuration)
+        .ReadFrom.Services(services)
+        .Enrich.FromLogContext()
+        .Enrich.WithProperty("service", "ingestion-api")
+        .Enrich.WithProperty("environment", context.HostingEnvironment.EnvironmentName)
+        .Enrich.With(new LevelLabelEnricher()));
 
 // 🗄️ DbContext (Write)
 builder.Services.AddDbContext<AppDbContext>(options =>
@@ -227,3 +230,11 @@ record TrackingUpdateRequest(
     double Latitude,
     double Longitude,
     string Description);
+
+internal sealed class LevelLabelEnricher : ILogEventEnricher
+{
+    public void Enrich(LogEvent logEvent, ILogEventPropertyFactory propertyFactory)
+    {
+        logEvent.AddPropertyIfAbsent(propertyFactory.CreateProperty("level", logEvent.Level.ToString()));
+    }
+}

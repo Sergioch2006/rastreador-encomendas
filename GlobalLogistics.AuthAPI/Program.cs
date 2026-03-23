@@ -8,8 +8,20 @@ using Microsoft.AspNetCore.DataProtection;
 using GlobalLogistics.AuthAPI.Data;
 using GlobalLogistics.AuthAPI.Models;
 using GlobalLogistics.AuthAPI.Services;
+using Serilog;
+using Serilog.Core;
+using Serilog.Events;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Host.UseSerilog((context, services, loggerConfiguration) =>
+    loggerConfiguration
+        .ReadFrom.Configuration(context.Configuration)
+        .ReadFrom.Services(services)
+        .Enrich.FromLogContext()
+        .Enrich.WithProperty("service", "auth-api")
+        .Enrich.WithProperty("environment", context.HostingEnvironment.EnvironmentName)
+        .Enrich.With(new LevelLabelEnricher()));
 
 // 🔐 Data Protection — cria o diretório se não existir
 var keysDir = new DirectoryInfo("/app/keys");
@@ -103,6 +115,7 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi();
 }
 
+app.UseSerilogRequestLogging();
 app.UseAuthentication();
 app.UseAuthorization();
 
@@ -150,5 +163,13 @@ public class ActiveUserRequirementHandler : AuthorizationHandler<ActiveUserRequi
             context.Succeed(requirement);
         }
         return Task.CompletedTask;
+    }
+}
+
+internal sealed class LevelLabelEnricher : ILogEventEnricher
+{
+    public void Enrich(LogEvent logEvent, ILogEventPropertyFactory propertyFactory)
+    {
+        logEvent.AddPropertyIfAbsent(propertyFactory.CreateProperty("level", logEvent.Level.ToString()));
     }
 }
