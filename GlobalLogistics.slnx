@@ -2,6 +2,7 @@
   <Project Path="GlobalLogistics.Application/GlobalLogistics.Application.csproj" />
   <Project Path="GlobalLogistics.AuthAPI/GlobalLogistics.AuthAPI.csproj" />
   <Project Path="GlobalLogistics.Domain/GlobalLogistics.Domain.csproj" />
+  <Project Path="GlobalLogistics.Gateway/GlobalLogistics.Gateway.csproj" />
   <Project Path="GlobalLogistics.Infrastructure/GlobalLogistics.Infrastructure.csproj" />
   <Project Path="GlobalLogistics.IngestionAPI/GlobalLogistics.IngestionAPI.csproj" />
   <Project Path="GlobalLogistics.QueryAPI/GlobalLogistics.QueryAPI.csproj" />

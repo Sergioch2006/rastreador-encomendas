@@ -38,8 +38,6 @@ services:
       context: .
       dockerfile: GlobalLogistics.AuthAPI/Dockerfile
     container_name: logistics-auth-api
-    ports:
-      - "5003:8080"
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
       - ASPNETCORE_HTTP_PORTS=8080
@@ -102,10 +100,9 @@ services:
       context: .
       dockerfile: GlobalLogistics.IngestionAPI/Dockerfile
     container_name: logistics-ingestion-api
-    ports:
-      - "5001:8080"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_HTTP_PORTS=8080
       - ConnectionStrings__SqlServer=Server=sqlserver,1433;Database=LogisticsWrite;User Id=sa;Password=Encomendas2026;TrustServerCertificate=true;
       - RabbitMQ__Host=rabbitmq
       - RabbitMQ__User=logistics_user
@@ -129,10 +126,9 @@ services:
       context: .
       dockerfile: GlobalLogistics.QueryAPI/Dockerfile
     container_name: logistics-query-api
-    ports:
-      - "5002:8080"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_HTTP_PORTS=8080
       - ConnectionStrings__SqlServer=Server=sqlserver,1433;Database=LogisticsWrite;User Id=sa;Password=Encomendas2026;TrustServerCertificate=true;
       - Redis__ConnectionString=redis:6379,password=Redis@2026!
       - Auth__JwtIssuer=GlobalLogistics.AuthAPI
@@ -166,5 +162,25 @@ services:
         condition: service_healthy
       redis:
         condition: service_healthy
+    networks:
+      - logistics-net
+
+  gateway:
+    build:
+      context: .
+      dockerfile: GlobalLogistics.Gateway/Dockerfile
+    container_name: logistics-gateway
+    ports:
+      - "5000:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_HTTP_PORTS=8080
+    depends_on:
+      logistics-auth-api:
+        condition: service_started
+      ingestion-api:
+        condition: service_started
+      query-api:
+        condition: service_started
     networks:
       - logistics-net
