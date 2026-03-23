@@ -1,4 +1,3 @@
-/home/sergio/rastreador-encomendas/GlobalLogistics.Infrastructure/obj/Debug/net10.0/GlobalLogistics.Infrastructure.csproj.AssemblyReference.cache
 /home/sergio/rastreador-encomendas/GlobalLogistics.Infrastructure/bin/Debug/net10.0/GlobalLogistics.Infrastructure.deps.json
 /home/sergio/rastreador-encomendas/GlobalLogistics.Infrastructure/bin/Debug/net10.0/GlobalLogistics.Infrastructure.runtimeconfig.json
 /home/sergio/rastreador-encomendas/GlobalLogistics.Infrastructure/bin/Debug/net10.0/GlobalLogistics.Infrastructure.dll
@@ -7,6 +6,7 @@
 /home/sergio/rastreador-encomendas/GlobalLogistics.Infrastructure/bin/Debug/net10.0/GlobalLogistics.Domain.dll
 /home/sergio/rastreador-encomendas/GlobalLogistics.Infrastructure/bin/Debug/net10.0/GlobalLogistics.Domain.pdb
 /home/sergio/rastreador-encomendas/GlobalLogistics.Infrastructure/bin/Debug/net10.0/GlobalLogistics.Application.pdb
+/home/sergio/rastreador-encomendas/GlobalLogistics.Infrastructure/obj/Debug/net10.0/GlobalLogistics.Infrastructure.csproj.AssemblyReference.cache
 /home/sergio/rastreador-encomendas/GlobalLogistics.Infrastructure/obj/Debug/net10.0/GlobalLogistics.Infrastructure.GeneratedMSBuildEditorConfig.editorconfig
 /home/sergio/rastreador-encomendas/GlobalLogistics.Infrastructure/obj/Debug/net10.0/GlobalLogistics.Infrastructure.AssemblyInfoInputs.cache
 /home/sergio/rastreador-encomendas/GlobalLogistics.Infrastructure/obj/Debug/net10.0/GlobalLogistics.Infrastructure.AssemblyInfo.cs

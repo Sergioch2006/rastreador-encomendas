@@ -35,5 +35,52 @@ Para garantir o rigor técnico e a qualidade do software, o projeto foi estrutur
 2. Clone o repositório.
 3. Execute o comando abaixo:
    ```bash
-   docker compose up -d
-4. Acesse o painel do RabbitMQ em localhost:15672.
+   docker compose up -d --build
+   ```
+
+## 🔐 Autenticação e Uso da API (curl)
+
+O projeto utiliza **JWT (JSON Web Tokens)** para proteger os endpoints dos microserviços. Abaixo seguem os comandos para testar o fluxo completo.
+
+### 1. Registrar um Novo Usuário
+```bash
+curl -i -X POST http://localhost:5003/api/auth/register \
+  -H "Content-Type: application/json" \
+  -d '{"email":"teste@example.com","password":"Senha@123","confirmPassword":"Senha@123","fullName":"Teste"}'
+```
+
+### 2. Realizar Login e Obter Token
+```bash
+# Execute e copie o valor do campo "token"
+curl -X POST http://localhost:5003/api/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"email":"teste@example.com","password":"Senha@123"}'
+```
+
+### 3. Criar um Pacote (IngestionAPI)
+Substitua `$TOKEN` pelo valor obtido no passo anterior:
+```bash
+curl -i -X POST http://localhost:5001/api/packages \
+  -H "Authorization: Bearer $TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "trackingCode": "BR123456789",
+    "senderName": "Empresa Logística SA",
+    "recipientName": "João Silva",
+    "originAddress": "São Paulo, SP",
+    "destinationAddress": "Rio de Janeiro, RJ",
+    "weightKg": 3.5
+  }'
+```
+
+### 4. Consultar Rastreamento (QueryAPI)
+```bash
+curl -i http://localhost:5002/api/tracking/BR123456789 \
+  -H "Authorization: Bearer $TOKEN"
+```
+
+### 5. Health Checks
+- **AuthAPI:** `http://localhost:5003/health`
+- **IngestionAPI:** `http://localhost:5001/health`
+- **QueryAPI:** `http://localhost:5002/health`
+- **RabbitMQ UI:** `http://localhost:15672` (logistics_user / Rabbit@2026!)

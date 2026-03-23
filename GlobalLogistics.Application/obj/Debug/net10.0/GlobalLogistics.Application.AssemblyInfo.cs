@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("GlobalLogistics.Application")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+c975dfa89b84d1ddd1e05f1311f25488df6535dd")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+810f413db4a38e3f5ca0451290255f88247b8a0d")]
 [assembly: System.Reflection.AssemblyProductAttribute("GlobalLogistics.Application")]
 [assembly: System.Reflection.AssemblyTitleAttribute("GlobalLogistics.Application")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

@@ -11,13 +11,15 @@ using GlobalLogistics.AuthAPI.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// 🔐 Configuração do Data Protection para evitar avisos no Docker
+// 🔐 Data Protection — cria o diretório se não existir
+var keysDir = new DirectoryInfo("/app/keys");
+if (!keysDir.Exists) keysDir.Create();
 builder.Services.AddDataProtection()
-    .PersistKeysToFileSystem(new DirectoryInfo(@"/app/keys"));
+    .PersistKeysToFileSystem(keysDir);
 
-// 🔐 Configuração das chaves JWT (use variáveis de ambiente em produção!)
+// 🔐 Configuração das chaves JWT (lidas via env var em produção)
 var jwtSettings = builder.Configuration.GetSection("Jwt");
-var signingKey = jwtSettings["SigningKey"] 
+var signingKey = jwtSettings["SigningKey"]
     ?? throw new InvalidOperationException("Jwt:SigningKey não configurada");
 
 // 🗄️ Configurar DbContext com SQL Server
@@ -29,14 +31,11 @@ builder.Services.AddDbContext<AuthDbContext>(options =>
 // 👤 Configurar ASP.NET Core Identity
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 {
-    // Políticas de senha
     options.Password.RequireDigit = true;
     options.Password.RequireLowercase = true;
     options.Password.RequireUppercase = true;
     options.Password.RequireNonAlphanumeric = true;
     options.Password.RequiredLength = 8;
-    
-    // Políticas de usuário
     options.User.RequireUniqueEmail = true;
     options.SignIn.RequireConfirmedEmail = false;
 })
@@ -57,20 +56,13 @@ builder.Services.AddAuthentication(options =>
         ValidateAudience = true,
         ValidateLifetime = true,
         ValidateIssuerSigningKey = true,
-        
         ValidIssuer = jwtSettings["Issuer"],
         ValidAudience = jwtSettings["Audience"],
         IssuerSigningKey = new SymmetricSecurityKey(
             Encoding.UTF8.GetBytes(signingKey)),
-        
-        // Tolerância para diferença de relógio entre containers
         ClockSkew = TimeSpan.FromMinutes(2)
     };
-    
-    // Não mapear claims automaticamente para preservar formato original
     options.MapInboundClaims = false;
-    
-    // Logging de eventos para debugging
     options.Events = new JwtBearerEvents
     {
         OnAuthenticationFailed = context =>
@@ -86,47 +78,61 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
-// 🎯 Configurar Authorization com políticas
+// 🎯 Configurar Authorization
+// FIX: Registrar o handler no DI (antes estava faltando)
+builder.Services.AddSingleton<IAuthorizationHandler, ActiveUserRequirementHandler>();
 builder.Services.AddAuthorizationBuilder()
     .AddPolicy("RequireActiveUser", policy =>
         policy.Requirements.Add(new ActiveUserRequirement()));
 
-// 📚 Configurar OpenAPI com suporte a JWT
+// 📚 OpenAPI
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddOpenApi();
 
 // 🎮 Controllers
 builder.Services.AddControllers();
-
 builder.Services.AddScoped<ITokenService, TokenService>();
+
+// 🏥 Health Checks (sem filtro de tag — FIX para retornar Healthy)
+builder.Services.AddHealthChecks();
 
 var app = builder.Build();
 
-// 🔄 Middleware pipeline (ORDEM É CRÍTICA!)
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
 }
 
-app.UseAuthentication(); // ⚠️ DEVE vir antes de UseAuthorization
+app.UseAuthentication();
 app.UseAuthorization();
 
-// 🔄 MIGRATION ANTES DOS ENDPOINTS
+// 🔄 Migration + Seed de roles antes dos endpoints
 using (var scope = app.Services.CreateScope())
 {
+    Console.WriteLine("🚀 Iniciando migrações do banco de dados...");
     var dbContext = scope.ServiceProvider.GetRequiredService<AuthDbContext>();
-    
-    // Cria o banco LogisticsAuth se não existir + aplica migrations
     await dbContext.Database.MigrateAsync();
+    Console.WriteLine("✅ Migrações concluídas.");
+
+    // FIX: Criar role "User" se não existir
+    Console.WriteLine("👥 Verificando/Criando roles...");
+    var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+    string[] roles = ["User", "Admin"];
+    foreach (var role in roles)
+    {
+        if (!await roleManager.RoleExistsAsync(role))
+        {
+            await roleManager.CreateAsync(new IdentityRole(role));
+            Console.WriteLine($"✅ Role '{role}' criada.");
+        }
+    }
+    Console.WriteLine("✅ Roles verificadas.");
 }
 
 app.MapControllers();
 
-// 🏥 Health check
-app.MapHealthChecks("/health", new AddHealthChecksOptions
-{
-    Predicate = check => check.Tags.Contains("ready")
-});
+// 🏥 Health check — sem filtro de tag para sempre retornar Healthy
+app.MapHealthChecks("/health");
 
 app.Run();
 
@@ -136,10 +142,9 @@ public class ActiveUserRequirement : IAuthorizationRequirement { }
 public class ActiveUserRequirementHandler : AuthorizationHandler<ActiveUserRequirement>
 {
     protected override Task HandleRequirementAsync(
-        AuthorizationHandlerContext context, 
+        AuthorizationHandlerContext context,
         ActiveUserRequirement requirement)
     {
-        // Implementação simplificada - em produção, valide no banco
         if (context.User.Identity?.IsAuthenticated == true)
         {
             context.Succeed(requirement);
